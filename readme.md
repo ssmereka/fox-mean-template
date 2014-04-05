@@ -1,6 +1,6 @@
 # Fox.js MEAN template
 
-A template designed to work with the [Fox.js](https://github.com/ssmereka/fox-js) framework that is designed around the MEAN stack.  The MEAN stack consists of [MongoDB](https://www.mongodb.org/), [Express](http://expressjs.com/), [Angular.js](http://angularjs.org/), and [Node.js](http://nodejs.org/).
+A template, for the [Fox.js](https://github.com/ssmereka/fox-js) framework, designed around the MEAN stack.  The MEAN stack consists of [MongoDB](https://www.mongodb.org/), [Express](http://expressjs.com/), [Angular.js](http://angularjs.org/), and [Node.js](http://nodejs.org/).  This template contains all the basic boiler-plate things all servers need like users, authentication, etc.
 
 **Current Status:** In Development.
 
