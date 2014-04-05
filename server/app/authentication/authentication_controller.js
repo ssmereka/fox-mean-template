@@ -53,6 +53,8 @@ module.exports = function(app, db, config) {
   // Logout of the current session.
   app.post('/logout.:format', logout);
 
+  // Get the user that is logged in
+  app.get('/login/user.:format', getUser);
 
   /* ************************************************** *
    * ******************** Route Methods
@@ -78,6 +80,7 @@ module.exports = function(app, db, config) {
     if(req.isAuthenticated()) {
       return next(sender.createError("User is already logged in.", 400));
     }
+
 
     // If the user is not logged in, authenticate them using the local (username and password) authentication strategy.
     passport.authenticate('local', function(err, user, user_error) {
@@ -109,6 +112,18 @@ module.exports = function(app, db, config) {
       return sender.setResponse(sender.createSuccessObject(), req, res, next);
     } else {
       return sender.setResponse(sender.createSuccessObject(false), req, res, next);
+    }
+  }
+
+  /**
+   * Returns a potential logged in user
+   */
+  function getUser(req, res, next) {
+    if(req.isAuthenticated()) {
+      req.user = req.user.sanitize();
+      return sender.setResponse(req.user, req, res, next);
+    } else {
+      return sender.setResponse({}, req, res, next);;
     }
   }
 

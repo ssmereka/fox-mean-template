@@ -13,7 +13,10 @@ module.exports = function(app, db, config) {
   /* ************************************************** *
    * ******************** Routes and Permissions
    * ************************************************** */
-  
+
+  app.get('/users.:format', users);                          // Get all users.
+  app.get('/users/:userId.:format', user);                 // Get a specific user.
+
   // Load user roles used for authentication.
   var adminRole = auth.queryRoleByName("admin"),
       selfRole  = auth.queryRoleByName("self");
@@ -23,5 +26,31 @@ module.exports = function(app, db, config) {
    * ******************** Route Methods
    * ************************************************** */
 
+  /* User
+   * Get and return the user object specified by their Object ID,
+   * name, or index.
+   */
+  function user(req, res, next) {
+    User.findOne({_id:req.params.userId}).exec(function(err, user){
+      if(err) return next(err);
+      user = user.sanitize();
+      sender.setResponse(user, req, res, next);
+    })
+  }
+
+  /* Users
+   * Get all the users and return them in the requested format.
+   */
+  function users(req, res, next) {
+    User.find().sort('index').exec(function(err, userRoles) {    // Find all the user roles and sort them by their permission level.
+      if(err) return next(err);
+
+      for(index in userRoles){
+        userRoles[index] = userRoles[index].sanitize();
+      }
+
+      sender.setResponse(userRoles, req, res, next);
+    });
+  }
 
 };

@@ -2,12 +2,16 @@
 // ~A Scott Smereka
 
 /*
- * Creates, configures, and starts the server.
+ * Create, configure, and start the server.
  */
 
-var path = require("path");
-var app = require("foxjs");    
+var app    = require("foxjs"),
+    path   = require("path");
 
+// Configuration file.
+var Config = require(path.resolve(__dirname, "../configs/config.js"));  
+    
+// Contains predefined methods used to manage the server instance.
 var server = {
   start: function(config, next) {
 
@@ -28,8 +32,9 @@ var server = {
   }
 };
 
+
 // Handle messages sent to the server, such as start, stop, restart, etc.
 app.message.handler(server);
 
-// Start the server using the configuration file.
-server.start(require(path.resolve(__dirname, "../configs/config.js")));
+// Start the server using the config.
+server.start(new Config());

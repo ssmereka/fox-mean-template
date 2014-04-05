@@ -17,10 +17,17 @@ var path            = require('path'),
 
 
 /* ************************************************** *
+ * ******************** Config Constructor
+ * ************************************************** */
+
+var Config = function() {
+};
+
+/* ************************************************** *
  * ******************** Config Object
  * ************************************************** */
 
-var config = {
+Config.prototype.default = {
   
   // Access tokens are used for API calls made on behalf
   // of a user.  You can override the default behavior here.
@@ -35,7 +42,6 @@ var config = {
     enabled: true,                            // Enable or Disable creation of the CRUD methods and routes.
     auth: {                                   // Authentication for each module's routes can be controlled.
       routeRoleAuth: {                        // Role based authentication
-        
         "user": {                             // User schema model specific settings.
           read: {                             // Getting a single user object settings.
             enabled: true,                    // Enable authentication
@@ -48,26 +54,11 @@ var config = {
             roles: [ "admin", "self" ],       // Allow roles admin and the user themselves to update the single user object.
           }
         },
-
-        "default": {                          // Default settings for all schema models.
-          read: {
-            enabled: false
-          },
-          readAll: {
-            enabled: false,
-          }
-        }
       }
     }
   },
 
-  // Fox-js system settings, these affect fox's internal libraries.
-  system: { 
-    debug: false,                             // Flag to enable display of debug messages by the fox module.
-    trace: false                              // Flag to enable display of trace log messages by the fox module.
-  },
-
-  // Server application root directory.
+  // Server application's root directory.
   dirname: serverDirectory + "/app/",
 
   // Absolute paths to files and folders.
@@ -110,11 +101,50 @@ var config = {
     "crud-queries",       // Query for schema object(s) on CRUD routes.
     "crud-methods",       // Set response and perform CRUD methods on all CRUD routes.
     "controller",         // Load all non-static controllers.
-    "tracker",            // Handle tracking requests and responses. 
     "response",           // Handle returning non-error respones to a requestor.
     "error"               // Lastly load error handler(s) to send errors and catch any unhandled requests.
   ]
 }
 
+/** 
+ * Config properties in this object will be include when
+ * the server is running in the local enviorment mode.
+ * Properties in this object will override properties in 
+ * the configuration object.
+ */
+Config.prototype.local = { 
+  crud: {
+    auth: {                              // Authentication for each module's routes can be controlled.
+      enabled: false                     // Disable crud authentication.
+    }
+  }
+};
+
+Config.prototype.development = {
+  // Mongo DB database connection information.
+  /*mongodb: {
+    enabled: true,                                    // Enable use of the mongo DB database.
+    useAuthentication: true,                          // Enable authentication on the database.
+    username: 'development',                          // If authentication is enabled, the username to authenticate.
+    password: 'abc123',                               // If authentication is enabled, the password to authenticate.
+    host: 'localhost',                                // Host ip address of the database.
+    port: '27017',                                    // Host port for the database.
+    database: 'awesome_dev_database'                  // Database name.
+  } */
+};
+
+Config.prototype.production = {
+  // Mongo DB database connection information.
+  /*mongodb: {
+    enabled: true,                                    // Enable use of the mongo DB database.
+    useAuthentication: true,                          // Enable authentication on the database.
+    username: 'production',                           // If authentication is enabled, the username to authenticate.
+    password: 'abc123',                               // If authentication is enabled, the password to authenticate.
+    host: 'localhost',                                // Host ip address of the database.
+    port: '27017',                                    // Host port for the database.
+    database: 'awesome_database'                      // Database name.
+  } */
+};
+
 // Export the configuration object.
-module.exports = config;
+module.exports = Config;

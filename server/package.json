@@ -1,12 +1,16 @@
 {
-  "name": "foxjs-server",
-  "description": "A template for a quick maintainable backend server.",
+  "name": "fox-mean-template",
+  "description": "A fox.js template that is designed around the MEAN stack.",
   "author": "Scott Smereka",
   "version": "0.0.1",
   "repository": {
     "type" : "git",
-    "url"  : ""
+    "url"  : "https://github.com/ssmereka/fox-mean-template/tree/master/server"
   },
+  "licenses": [{
+      "type": "MIT",
+      "url": "https://github.com/ssmereka/fox-mean-template/blob/master/license"
+  }],
   "dependencies": {
     "async":                "x.x.x",
     "foxjs":                "x.x.x",

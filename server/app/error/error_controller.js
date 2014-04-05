@@ -79,5 +79,6 @@ module.exports = function(app, db, config) {
     if(! req.isHandled) {
       sender.createAndSendError("Method or Request not found.", 404, req, res, next);
     }
+    next();
   }
 };
