@@ -12,13 +12,18 @@ var app    = require("foxjs"),
 var Config = require(path.resolve(__dirname, "../configs/config.js"));  
     
 // Contains predefined methods used to manage the server instance.
-var server = {
+var serverController = {
   start: function(config, next) {
 
     // Perform any additional configuration of the server
     // before it starts loading routes and finishing up.
 
-    app.start(config, next);
+    app.start(config, function(err, app, db, config, server, fox, io) {
+
+      // Perform any additional tasks here after the server
+      // has started.
+
+    });
   },
 
   stop: function(config, next) {
@@ -32,9 +37,8 @@ var server = {
   }
 };
 
-
 // Handle messages sent to the server, such as start, stop, restart, etc.
-app.message.handler(server);
+app.message.handler(serverController);
 
 // Start the server using the config.
-server.start(new Config());
+serverController.start(new Config());

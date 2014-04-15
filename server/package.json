@@ -19,7 +19,8 @@
     "connect-mongo" :       "0.3.x",
     "colors":               "0.6.x",
     "crypto":               "0.0.3",
-    "express":              "3.4.x",    
+    "express":              "3.4.x",
+    "express.io":           "x.x.x",   
     "express-validator":    "0.8.x",
     "forever-monitor":      "1.2.2",    
     "jade":                 "0.35.x",   
@@ -28,6 +29,7 @@
     "passport":             "0.1.x",    
     "passport-local":       "0.1.x",
     "passport-http-bearer": "x.x.x",
+    "passport.socketio":    "x.x.x",
     "sanitize-it":          "x.x.x",
     "validator":            "1.5.1"
   },

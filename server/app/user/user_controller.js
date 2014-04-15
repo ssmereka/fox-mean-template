@@ -22,9 +22,29 @@ module.exports = function(app, db, config) {
       selfRole  = auth.queryRoleByName("self");
 
 
+  app.io.route('users', {
+    create: function(req) {
+      console.log("Auth user: ");
+      console.log(req.handshake.user);
+      console.log("created user");
+
+      req.io.emit('talk', { message: "success?!"});
+    } 
+  });
+
+
+  app.io.route('hello', function(req) {
+    console.log(req.session);
+    console.log(req.data);
+    console.log(req.handshake.user);
+    req.io.emit('hello', { message: (req.handshake.user.logged_in === false) ? "You are not authenticated." : "WHY HELLO THERE AUTHENTICATED USER!!"});
+  });
+
+
   /* ************************************************** *
    * ******************** Route Methods
    * ************************************************** */
+
 
   /* User
    * Get and return the user object specified by their Object ID,
