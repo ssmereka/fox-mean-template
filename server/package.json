@@ -26,7 +26,7 @@
     "jade":                 "0.35.x",   
     "mongodb":              "1.2.x",
     "mongoose":             "3.6.x",
-    "passport":             "0.1.x",    
+    "passport":             "0.2.x",    
     "passport-local":       "0.1.x",
     "passport-http-bearer": "x.x.x",
     "passport.socketio":    "x.x.x",
