@@ -9,14 +9,25 @@
       var socket;
       var printCount = 0;
 
-      function login() {
+      function onLoad() {
+        login(connect);
+      }
+
+
+      function login(next) {
         $.post(domain+"/login.json", { "username":"superadmin@localhost.com", "password":"IOlQ9V6Tg6RVL7DSJFL248723Bm3JjCF34FI0TJOVPvRzz"}).success(function(res) {
             if(res) {
               printData("Login: " + JSON.stringify(res.response));
             }
+            if(next) {
+              return next();
+            }
           }).error(function(res) {
             if(res && res.responseJSON) {
               printData("Login: " + res.responseJSON.error);
+            }
+            if(next) {
+              return next();
             }
           });
       }
@@ -34,6 +45,11 @@
       }
 
       function connect() {
+        if(socket) {
+          socket.socket.reconnect();
+          return;
+        }
+
         socket = io.connect();
         socket.on('hello', function(res) {
           if(res) {
@@ -43,12 +59,74 @@
         
         socket.emit('hello', JSON.stringify({message: "hello there."}));
 
-        /*socket.on('/users.json', printData);
-        socket.on('/games.json', printData);
-        socket.on('/games/join.json', printData);
-        socket.on('lobbyUpdate', function(data) {
-          console.log("Lobby Update: " + data);
-        });*/
+        //**************************************************//
+        //***************** Reserved Events
+        //**************************************************//
+
+        socket.on('connect', function() {
+          printData("Connected");
+        });
+
+        socket.on("connecting", function() {
+          printData("Connecting...");
+        });
+
+        socket.on('disconnect', function () {
+          printData("Disconnected");
+        });
+
+        socket.on('connect_failed', function() {
+          printData("Connection Failed");
+        });
+
+        socket.on('error', function(error) {
+          console.log(error);
+          printData("Error" + error);
+        });
+
+        socket.on('message', function(message, cb) {
+          console.log(message);
+          printData("Message: " + message);
+        });
+
+        socket.on('reconnect_failed', function() {
+          printData("Reconnection Failed");
+        });
+
+        socket.on('reconnect', function() {
+          printData("Reconnected");
+        });
+
+        socket.on('reconnecting', function() {
+          printData("Reconnecting...");
+        });
+
+        //**************************************************//
+        //***************** Non Reserved Events
+        //**************************************************//
+
+        socket.on('anything', function(data, cb) {
+          console.log(data);
+          printData("Anything: " + data);
+          if(cb) {
+            cb(data);
+          }
+        });
+
+        socket.on('session', function(data) {
+          console.log(data);
+          printData("Session: " + data);
+        });
+
+        socket.on('gameMessage', function(data) {
+          console.log(data);
+          printData("Game: " + JSON.stringify(data));
+        });
+
+      }
+
+      function disconnect() {
+        socket.disconnect();
       }
 
       var printData = function(str) {
@@ -61,17 +139,41 @@
         printCount++;
       }
 
+      function updateAndGetSession() {
+        updateSession();
+        getSession();
+      }
+
+      function updateSession() {
+        socket.emit('session:update', {apiVersion: 1});
+      }
+
+      function getSession() {
+        socket.emit('session:get', {}, function(data) {
+          printData("Session: " + JSON.stringify(data));
+        });
+      }
+
+      function joinGame() {
+        socket.emit('game:join', { _id: "alksdjf2lkfjsldkf"});
+      }
 
       function createUser() {
         /*socket.send(JSON.stringify({ method: 'POST', url: '/users.json', params: { phoneNumber: '911', username: 'Kim Jong-il the 3rd'} })); */
-        socket.emit('users:create', JSON.stringify({ method: 'POST', url: '/users.json', params: { phoneNumber: '911', username: 'Kim Jong-il the 3rd'} }));
+        var user = {
+          name: "Scott"
+        };
+
+        socket.emit('users:create', JSON.stringify(user), function(data) {
+          printData("Create User: " + JSON.stringify(data));
+        });
       }
 
       function createGame() {
         socket.send(JSON.stringify({ method: 'POST', url: '/games.json', params: { geofence: {topRight: "", topLeft: "", bottomRight: "", bottomLeft:""}, maxPlayers: 10, gameName: "The Game Name", duration: 30000, scenario: {name:"TDM"}, user: "5342e881562d666447000002" } }));
       }
 
-      function joinGame() {
+      /*function joinGame() {
         var obj = {
           method: 'POST', 
           url: '/games/join.json', 
@@ -81,14 +183,18 @@
           } 
         };
        socket.send(JSON.stringify(obj));
-      }
+      } */
+
+      onLoad();
     </script>
     </script>
   </head>
   <body>
     <div><button id="login" onclick="login()">Login</button></div>
     <div><button id="logout" onclick="logout()">Logout</button></div>
-    <div><button id="login" onclick="connect()">Connect</button></div>
+    <div><button id="connect" onclick="connect()">Connect</button></div>
+    <div><button id="updateSession" onclick="updateAndGetSession()">Update Session</button></div>
+    <div><button id="disconnect" onclick="disconnect()">Disconnect</button></div>
     <div><button id="createUser" onclick="createUser()">Create User</button></div>
     <div><button id="createGame" onclick="createGame()">Create Game</button></div>
     <div><button id="joinGame" onclick="joinGame()">Join Game</button></div>
